@@ -1,5 +1,7 @@
 {
-  "typescript.preferences.autoImportFileExcludePatterns": [
+  "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "js/ts.preferences.autoImportFileExcludePatterns": [
     "@ionic/angular/common",
     "@ionic/angular/directives",
     "@ionic/angular/index.d.ts",
