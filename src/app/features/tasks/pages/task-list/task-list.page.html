@@ -1,17 +1,118 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>To-Do</ion-title>
-  </ion-toolbar>
+<ion-header class="page-header">
+  <app-header title="To-Do" />
 </ion-header>
 
-<ion-content class="ion-padding">
-  <h1>Mis tareas</h1>
+<ion-content class="page-content">
+  @if (facade.loading()) {
+    <div class="loading">
+      <ion-spinner />
+    </div>
+  } @else {
+    <main class="page-shell">
+      <section class="tasks-layout">
+        <aside class="tasks-sidebar">
+          <app-task-summary
+            [pendingCount]="facade.pendingCount()"
+            [completedCount]="facade.completedCount()"
+          />
 
-  <p>
-    Pendientes: {{ store.pendingCount() }}
-  </p>
+          <app-task-filter
+            [categories]="facade.categories()"
+            [filters]="facade.filters()"
+            (filterChanged)="setFilters($event)"
+            (filtersCleared)="facade.clearFilters()"
+          />
+        </aside>
 
-  <p>
-    Completadas: {{ store.completedCount() }}
-  </p>
+        <section class="task-groups">
+          @if (showNotStartedGroup()) {
+            <app-task-group
+              title="No iniciado"
+              status="not-started"
+              [tasks]="facade.notStartedTasks()"
+              [categories]="facade.categories()"
+              (taskMenuOpened)="openTaskActions($event)"
+            />
+          }
+
+          @if (showInProgressGroup()) {
+            <app-task-group
+              title="En progreso"
+              status="in-progress"
+              [tasks]="facade.inProgressTasks()"
+              [categories]="facade.categories()"
+              (taskMenuOpened)="openTaskActions($event)"
+            />
+          }
+
+          @if (showFinishedGroup()) {
+            <app-task-group
+              title="Terminado"
+              status="finished"
+              [tasks]="facade.finishedTasks()"
+              [categories]="facade.categories()"
+              (taskMenuOpened)="openTaskActions($event)"
+            />
+          }
+
+          @if (
+            hasActiveFilters()
+            && !hasFilteredTasks()
+          ) {
+            <section class="filtered-empty-state">
+              <app-empty-state
+                title="No hay resultados"
+                message="Prueba cambiando o eliminando los filtros."
+              />
+            </section>
+          }
+        </section>
+      </section>
+    </main>
+  }
+
+  <ion-fab
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+  >
+    <ion-fab-button
+      aria-label="Crear tarea"
+      (click)="openTaskForm()"
+    >
+      <ion-icon name="add" />
+    </ion-fab-button>
+  </ion-fab>
+
+  <app-modal
+    [open]="taskFormOpen()"
+    title="Nueva tarea"
+    description="Agrega el titulo y una categoria."
+    (closed)="closeTaskForm()"
+  >
+    <app-task-form
+      [categories]="facade.categories()"
+      (taskCreated)="createTask($event)"
+    />
+  </app-modal>
+
+  <app-task-actions
+    [task]="selectedTask()"
+    [open]="selectedTask() !== null"
+    (moved)="moveSelectedTask($event)"
+    (deleted)="deleteSelectedTask()"
+    (closed)="closeTaskActions()"
+  />
+
+  <ion-toast
+    [isOpen]="toastOpen()"
+    [message]="toastMessage()"
+    [duration]="2600"
+    position="bottom"
+    (didDismiss)="toastOpen.set(false)"
+  />
 </ion-content>
+
+<ion-footer class="page-footer">
+  <app-bottom-navigation />
+</ion-footer>
