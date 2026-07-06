@@ -1,0 +1,47 @@
+<ion-accordion-group [value]="status()">
+  <ion-accordion
+    [value]="status()"
+    class="task-group"
+    [class.not-started]="status() === 'not-started'"
+    [class.in-progress]="status() === 'in-progress'"
+    [class.finished]="status() === 'finished'"
+  >
+    <ion-item
+      slot="header"
+      lines="none"
+      class="group-header"
+    >
+      <ion-icon
+        slot="start"
+        [name]="iconName()"
+      />
+
+      <ion-label>{{ title() }}</ion-label>
+
+      <span class="group-count">
+        {{ tasks().length }}
+      </span>
+    </ion-item>
+
+    <section
+      slot="content"
+      class="group-content"
+    >
+      @for (
+        task of tasks();
+        track task.id
+      ) {
+        <app-task-item
+          [task]="task"
+          [categoryName]="getCategoryName(task.categoryId)"
+          (menuOpened)="taskMenuOpened.emit($event)"
+        />
+      } @empty {
+        <app-empty-state
+          [title]="emptyMessage()"
+          [compact]="true"
+        />
+      }
+    </section>
+  </ion-accordion>
+</ion-accordion-group>

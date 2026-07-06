@@ -1,3 +1,56 @@
-<p>
-  task-form works!
-</p>
+<form
+  class="task-form"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+  <ion-item lines="none">
+    <ion-input
+      label="Titulo"
+      labelPlacement="stacked"
+      placeholder="Escribe la tarea"
+      maxlength="80"
+      formControlName="title"
+    />
+  </ion-item>
+
+  @if (
+    form.controls.title.touched
+    && form.controls.title.invalid
+  ) {
+    <ion-text color="danger">
+      <p class="validation-message">
+        Escribe un titulo de al menos 2 caracteres.
+      </p>
+    </ion-text>
+  }
+
+  <ion-item lines="none">
+    <ion-select
+      label="Categoria"
+      labelPlacement="stacked"
+      interface="popover"
+      formControlName="categoryId"
+    >
+      <ion-select-option value="">
+        Sin categoria
+      </ion-select-option>
+
+      @for (
+        category of categories();
+        track category.id
+      ) {
+        <ion-select-option [value]="category.id">
+          {{ category.name }}
+        </ion-select-option>
+      }
+    </ion-select>
+  </ion-item>
+
+  <ion-button
+    expand="block"
+    type="submit"
+    [disabled]="form.invalid"
+  >
+    Crear tarea
+  </ion-button>
+</form>

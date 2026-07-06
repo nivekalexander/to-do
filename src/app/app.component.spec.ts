@@ -1,18 +1,23 @@
-﻿import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-  it('should create the app', async () => {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      providers: [provideRouter([])]
+      providers: [
+        provideRouter([]),
+      ],
     }).compileComponents();
-    
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  });
+
+  it('crea el componente principal', () => {
+    const fixture =
+      TestBed.createComponent(AppComponent);
+
+    expect(fixture.componentInstance)
+      .toBeTruthy();
   });
 });
-
-

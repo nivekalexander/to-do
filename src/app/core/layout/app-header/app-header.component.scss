@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  background: linear-gradient(
+    135deg,
+    var(--app-header-start),
+    var(--app-header-end)
+  );
+}
+
+ion-toolbar {
+  --background: transparent;
+  --color: #ffffff;
+  --border-width: 0;
+
+  min-height: 82px;
+  padding-top: env(safe-area-inset-top);
+}
+
+ion-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  ion-toolbar {
+    min-height: 72px;
+  }
+}

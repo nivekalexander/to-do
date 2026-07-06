@@ -1,17 +1,66 @@
-﻿import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
+import {
+  IonButton,
+  IonIcon,
+  IonItem,
+  IonLabel,
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  checkmarkCircleOutline,
+  timeOutline,
+  ellipsisVertical,
+  syncOutline,
+} from 'ionicons/icons';
+
+import {
+  Task,
+  TaskStatus,
+} from '../../../../shared/models/task.model';
 
 @Component({
   selector: 'app-task-item',
-  templateUrl: './task-item.component.html',
-  styleUrls: ['./task-item.component.scss'],
   standalone: true,
+  imports: [
+    IonButton,
+    IonIcon,
+    IonItem,
+    IonLabel,
+  ],
+  templateUrl: './task-item.component.html',
+  styleUrl: './task-item.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskItemComponent  implements OnInit {
+export class TaskItemComponent {
+  readonly task = input.required<Task>();
+  readonly categoryName =
+    input('Sin categoria');
 
-  constructor() { }
+  readonly menuOpened = output<Task>();
 
-  ngOnInit() {}
+  constructor() {
+    addIcons({
+      checkmarkCircleOutline,
+      timeOutline,
+      ellipsisVertical,
+      syncOutline,
+    });
+  }
 
+  getStatusIcon(status: TaskStatus): string {
+    if (status === 'in-progress') {
+      return 'sync-outline';
+    }
+
+    if (status === 'finished') {
+      return 'checkmark-circle-outline';
+    }
+
+    return 'time-outline';
+  }
 }
-
-
