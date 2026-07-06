@@ -1,0 +1,41 @@
+<ion-header class="page-header">
+  <app-header title="Categorias" />
+</ion-header>
+
+<ion-content class="page-content">
+  @if (facade.loading()) {
+    <div class="loading">
+      <ion-spinner />
+    </div>
+  } @else {
+    <main class="page-shell">
+      <section class="categories-view">
+        <header>
+          <h1>Categorias</h1>
+          <p>
+            Crea y administra las categorias de tus tareas.
+          </p>
+        </header>
+
+        <app-category-manager
+          [categories]="facade.categories()"
+          (categoryCreated)="createCategory($event)"
+          (categoryRenamed)="renameCategory($event)"
+          (categoryDeleted)="deleteCategory($event)"
+        />
+      </section>
+    </main>
+  }
+
+  <ion-toast
+    [isOpen]="toastOpen()"
+    [message]="toastMessage()"
+    [duration]="2600"
+    position="bottom"
+    (didDismiss)="toastOpen.set(false)"
+  />
+</ion-content>
+
+<ion-footer class="page-footer">
+  <app-bottom-navigation />
+</ion-footer>

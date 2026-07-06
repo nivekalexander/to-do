@@ -1,0 +1,108 @@
+<section class="category-manager">
+  <form
+    class="category-form"
+    [formGroup]="createForm"
+    (ngSubmit)="createCategory()"
+  >
+    <ion-item lines="none">
+      <ion-input
+        label="Nueva categoria"
+        labelPlacement="stacked"
+        placeholder="Ej. Trabajo"
+        maxlength="40"
+        formControlName="name"
+      />
+    </ion-item>
+
+    @if (
+      createForm.controls.name.touched
+      && createForm.controls.name.invalid
+    ) {
+      <ion-text color="danger">
+        <p class="validation-message">
+          Escribe un nombre de al menos 2 caracteres.
+        </p>
+      </ion-text>
+    }
+
+    <ion-button
+      expand="block"
+      type="submit"
+      [disabled]="createForm.invalid"
+    >
+      Crear categoria
+    </ion-button>
+  </form>
+
+  <ion-list class="category-list">
+    @for (
+      category of categories();
+      track category.id
+    ) {
+      <ion-item lines="none">
+        @if (editingCategoryId() === category.id) {
+          <form
+            class="edit-form"
+            [formGroup]="editForm"
+            (ngSubmit)="saveCategory(category.id)"
+          >
+            <ion-input
+              aria-label="Nombre de la categoria"
+              maxlength="40"
+              formControlName="name"
+            />
+
+            <div class="category-actions">
+              <ion-button
+                size="small"
+                type="submit"
+                [disabled]="editForm.invalid"
+              >
+                Guardar
+              </ion-button>
+
+              <ion-button
+                size="small"
+                fill="clear"
+                type="button"
+                (click)="cancelEditing()"
+              >
+                Cancelar
+              </ion-button>
+            </div>
+          </form>
+        } @else {
+          <ion-label>{{ category.name }}</ion-label>
+
+          <ion-button
+            slot="end"
+            size="small"
+            fill="clear"
+            (click)="startEditing(category)"
+          >
+            Editar
+          </ion-button>
+
+          <ion-button
+            slot="end"
+            size="small"
+            fill="clear"
+            color="danger"
+            (click)="categoryDeleted.emit(category.id)"
+          >
+            Eliminar
+          </ion-button>
+        }
+      </ion-item>
+    } @empty {
+      <ion-item
+        lines="none"
+        class="empty-category"
+      >
+        <ion-label>
+          No hay categorias creadas.
+        </ion-label>
+      </ion-item>
+    }
+  </ion-list>
+</section>
