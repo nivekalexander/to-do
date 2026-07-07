@@ -71,13 +71,108 @@ function loadCordovaScript():
   });
 }
 
+function waitForDeviceReady():
+  Promise<void> {
+
+  if (!isCordovaRuntime()) {
+    return Promise.resolve();
+  }
+
+  return new Promise(resolve => {
+    document.addEventListener(
+      'deviceready',
+      () => resolve(),
+      { once: true },
+    );
+  });
+}
+
+function applyViewportHeight(): void {
+  if (!isCordovaRuntime()) {
+    return;
+  }
+
+  const viewportHeight = Math.round(
+    window.visualViewport?.height
+    ?? window.innerHeight,
+  );
+
+  const value = `${viewportHeight}px`;
+
+  document.documentElement.style.height = value;
+  document.body.style.height = value;
+
+  const ionApp =
+    document.querySelector<HTMLElement>('ion-app');
+
+  if (ionApp) {
+    ionApp.style.height = value;
+    ionApp.style.minHeight = value;
+  }
+}
+
+function scheduleViewportRefresh(): void {
+  requestAnimationFrame(() => {
+    applyViewportHeight();
+
+    requestAnimationFrame(() => {
+      applyViewportHeight();
+    });
+  });
+
+  window.setTimeout(
+    () => applyViewportHeight(),
+    150,
+  );
+}
+
+function registerViewportListeners(): void {
+  if (!isCordovaRuntime()) {
+    return;
+  }
+
+  window.addEventListener(
+    'resize',
+    () => applyViewportHeight(),
+    { passive: true },
+  );
+
+  window.visualViewport?.addEventListener(
+    'resize',
+    () => applyViewportHeight(),
+    { passive: true },
+  );
+
+  document.addEventListener(
+    'resume',
+    () => scheduleViewportRefresh(),
+  );
+
+  document.addEventListener(
+    'visibilitychange',
+    () => {
+      if (
+        document.visibilityState === 'visible'
+      ) {
+        scheduleViewportRefresh();
+      }
+    },
+  );
+}
+
 async function bootstrap(): Promise<void> {
   await loadCordovaScript();
+  await waitForDeviceReady();
+
+  applyViewportHeight();
 
   await bootstrapApplication(
     AppComponent,
     appConfig,
   );
+
+  registerViewportListeners();
+  scheduleViewportRefresh();
 }
 
 void bootstrap();
