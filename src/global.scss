@@ -25,6 +25,13 @@
   --app-shadow: 0 12px 32px rgb(31 55 90 / 14%);
 }
 
+html.plt-android.plt-hybrid,
+html.plt-android.plt-hybrid body,
+html.plt-android.plt-hybrid ion-app {
+  --ion-safe-area-top: 0px;
+  --ion-safe-area-bottom: 0px;
+}
+
 html,
 body,
 ion-app {

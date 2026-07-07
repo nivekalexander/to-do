@@ -4,7 +4,6 @@ import {
   input,
 } from '@angular/core';
 import {
-  IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
 
@@ -12,7 +11,6 @@ import {
   selector: 'app-header',
   standalone: true,
   imports: [
-    IonTitle,
     IonToolbar,
   ],
   templateUrl: './app-header.component.html',
