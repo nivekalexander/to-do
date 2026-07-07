@@ -11,6 +11,7 @@ import {
   IonHeader,
   IonSpinner,
   IonToast,
+  IonToolbar,
 } from '@ionic/angular/standalone';
 
 import {
@@ -36,6 +37,7 @@ import {
     IonHeader,
     IonSpinner,
     IonToast,
+    IonToolbar,
     AppHeaderComponent,
     BottomNavigationComponent,
     CategoryManagerComponent,

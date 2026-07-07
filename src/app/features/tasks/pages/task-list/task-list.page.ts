@@ -15,6 +15,7 @@ import {
   IonIcon,
   IonSpinner,
   IonToast,
+  IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
@@ -70,6 +71,7 @@ import {
     IonIcon,
     IonSpinner,
     IonToast,
+    IonToolbar,
     AppHeaderComponent,
     AppModalComponent,
     BottomNavigationComponent,
