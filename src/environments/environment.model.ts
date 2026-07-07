@@ -3,6 +3,11 @@ export type TodoDataSource =
   | 'mock'
   | 'firebase';
 
+export type RemoteConfigValue =
+  | string
+  | number
+  | boolean;
+
 export interface FirebaseClientConfig {
   apiKey: string;
   authDomain: string;
@@ -18,8 +23,19 @@ export interface FirebaseEnvironment {
   config: FirebaseClientConfig;
 }
 
+export interface RemoteConfigEnvironment {
+  enabled: boolean;
+  fetchTimeoutMillis: number;
+  minimumFetchIntervalMillis: number;
+  defaultValues: Record<
+    string,
+    RemoteConfigValue
+  >;
+}
+
 export interface AppEnvironment {
   production: boolean;
   todoDataSource: TodoDataSource;
   firebase: FirebaseEnvironment;
+  remoteConfig: RemoteConfigEnvironment;
 }

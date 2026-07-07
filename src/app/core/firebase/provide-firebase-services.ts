@@ -14,6 +14,10 @@ import {
   getFirestore,
   provideFirestore,
 } from '@angular/fire/firestore';
+import {
+  getRemoteConfig,
+  provideRemoteConfig,
+} from '@angular/fire/remote-config';
 
 import {
   environment,
@@ -34,5 +38,8 @@ export function provideFirebaseServices():
     ),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+    provideRemoteConfig(() =>
+      getRemoteConfig(),
+    ),
   ]);
 }

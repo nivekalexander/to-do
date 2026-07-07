@@ -15,6 +15,9 @@ import {
   Task,
 } from '../../../../shared/models/task.model';
 import {
+  TaskFeatureFlags,
+} from '../../data-access/task-feature-flags';
+import {
   TasksFacade,
 } from '../../data-access/tasks.facade';
 import { TaskListPage } from './task-list.page';
@@ -22,6 +25,13 @@ import { TaskListPage } from './task-list.page';
 describe('TaskListPage', () => {
   let fixture:
     ComponentFixture<TaskListPage>;
+
+  const featureFlagsMock = {
+    filtersEnabled: signal(true),
+    initialize: jasmine
+      .createSpy('initialize')
+      .and.resolveTo(),
+  };
 
   const facadeMock = {
     loading: signal(false),
@@ -61,6 +71,10 @@ describe('TaskListPage', () => {
           provide: TasksFacade,
           useValue: facadeMock,
         },
+        {
+          provide: TaskFeatureFlags,
+          useValue: featureFlagsMock,
+        },
       ],
     }).compileComponents();
 
@@ -73,6 +87,9 @@ describe('TaskListPage', () => {
 
   it('inicia la feature al abrir la pagina', () => {
     expect(facadeMock.initialize)
+      .toHaveBeenCalled();
+
+    expect(featureFlagsMock.initialize)
       .toHaveBeenCalled();
   });
 });

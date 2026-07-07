@@ -23,4 +23,13 @@ export const environment: AppEnvironment = {
         '1:560006178503:web:6662402244fd63af1f40e2',
     },
   },
+
+  remoteConfig: {
+    enabled: true,
+    fetchTimeoutMillis: 10000,
+    minimumFetchIntervalMillis: 3600000,
+    defaultValues: {
+      task_filters_enabled: true,
+    },
+  },
 };
