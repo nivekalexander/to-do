@@ -8,7 +8,6 @@ import {
 } from '@angular/router';
 import {
   IonIcon,
-  IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -23,7 +22,6 @@ import {
     RouterLink,
     RouterLinkActive,
     IonIcon,
-    IonToolbar,
   ],
   templateUrl: './bottom-navigation.component.html',
   styleUrl: './bottom-navigation.component.scss',
