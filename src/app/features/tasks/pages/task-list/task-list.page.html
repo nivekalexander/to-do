@@ -18,12 +18,14 @@
             [completedCount]="facade.completedCount()"
           />
 
-          <app-task-filter
-            [categories]="facade.categories()"
-            [filters]="facade.filters()"
-            (filterChanged)="setFilters($event)"
-            (filtersCleared)="facade.clearFilters()"
-          />
+          @if (filtersEnabled()) {
+            <app-task-filter
+              [categories]="facade.categories()"
+              [filters]="facade.filters()"
+              (filterChanged)="setFilters($event)"
+              (filtersCleared)="facade.clearFilters()"
+            />
+          }
         </aside>
 
         <section class="task-groups">

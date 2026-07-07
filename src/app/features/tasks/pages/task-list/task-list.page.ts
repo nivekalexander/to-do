@@ -56,6 +56,9 @@ import {
   TaskSummaryComponent,
 } from '../../components/task-summary/task-summary.component';
 import {
+  TaskFeatureFlags,
+} from '../../data-access/task-feature-flags';
+import {
   TasksFacade,
 } from '../../data-access/tasks.facade';
 
@@ -88,6 +91,12 @@ import {
 })
 export class TaskListPage implements OnInit {
   readonly facade = inject(TasksFacade);
+
+  private readonly featureFlags =
+    inject(TaskFeatureFlags);
+
+  readonly filtersEnabled =
+    this.featureFlags.filtersEnabled;
 
   readonly selectedTask =
     signal<Task | null>(null);
@@ -127,7 +136,14 @@ export class TaskListPage implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.facade.initialize();
+    await Promise.all([
+      this.facade.initialize(),
+      this.featureFlags.initialize(),
+    ]);
+
+    if (!this.filtersEnabled()) {
+      this.facade.clearFilters();
+    }
   }
 
   openTaskForm(): void {
@@ -154,6 +170,10 @@ export class TaskListPage implements OnInit {
   }
 
   setFilters(filters: TaskFilters): void {
+    if (!this.filtersEnabled()) {
+      return;
+    }
+
     try {
       this.facade.setFilters(filters);
     } catch (error) {
