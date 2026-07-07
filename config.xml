@@ -11,10 +11,13 @@
   <allow-intent href="sms:*" />
   <allow-intent href="mailto:*" />
   <allow-intent href="geo:*" />
+
   <preference name="BackupWebStorage" value="none" />
   <preference name="ScrollEnabled" value="false" />
+
   <platform name="android">
     <preference name="android-minSdkVersion" value="24" />
+    <preference name="AndroidEdgeToEdge" value="false" />
     <allow-intent href="market:*" />
   </platform>
 </widget>

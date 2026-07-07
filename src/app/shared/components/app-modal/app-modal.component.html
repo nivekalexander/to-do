@@ -1,0 +1,40 @@
+<ion-modal
+  #modal
+  class="app-centered-modal"
+  [isOpen]="open()"
+  [backdropDismiss]="backdropDismiss()"
+  [keyboardClose]="true"
+  (didDismiss)="closed.emit()"
+>
+  <ng-template>
+    <section
+      class="app-modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="title()"
+    >
+      <header class="app-modal-header">
+        <div>
+          <h2>{{ title() }}</h2>
+
+          @if (description()) {
+            <p>{{ description() }}</p>
+          }
+        </div>
+
+        <button
+          type="button"
+          class="app-modal-close"
+          aria-label="Cerrar"
+          (click)="modal.dismiss()"
+        >
+          <ion-icon name="close-outline" />
+        </button>
+      </header>
+
+      <div class="app-modal-body">
+        <ng-content></ng-content>
+      </div>
+    </section>
+  </ng-template>
+</ion-modal>

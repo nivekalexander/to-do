@@ -1,0 +1,31 @@
+<ion-item
+  lines="none"
+  class="task-item"
+  [class.finished]="task().status === 'finished'"
+>
+  <ion-icon
+    slot="start"
+    class="status-icon"
+    [name]="getStatusIcon(task().status)"
+  />
+
+  <ion-label>
+    <h2>{{ task().title }}</h2>
+
+    <span class="category-label">
+      {{ categoryName() }}
+    </span>
+  </ion-label>
+
+  <ion-button
+    slot="end"
+    fill="clear"
+    aria-label="Opciones de la tarea"
+    (click)="menuOpened.emit(task())"
+  >
+    <ion-icon
+      slot="icon-only"
+      name="ellipsis-vertical"
+    />
+  </ion-button>
+</ion-item>

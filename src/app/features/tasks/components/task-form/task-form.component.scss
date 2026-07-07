@@ -1,0 +1,44 @@
+:host {
+  display: block;
+  color-scheme: light;
+}
+
+.task-form {
+  display: grid;
+  gap: 14px;
+}
+
+ion-item {
+  --background: #f7f9fc;
+  --color: #172033;
+  --border-radius: 14px;
+  --padding-start: 14px;
+  --inner-padding-end: 14px;
+
+  border: 1px solid #e2e8f0;
+}
+
+ion-input,
+ion-select {
+  --color: #172033;
+  --placeholder-color: #98a2b3;
+  --label-color: #475467;
+}
+
+ion-button {
+  --background: #1769e8;
+  --background-hover: #1258c7;
+  --color: #ffffff;
+  --border-radius: 13px;
+
+  min-height: 52px;
+  margin-top: 4px;
+
+  font-weight: 700;
+  text-transform: none;
+}
+
+.validation-message {
+  margin: -6px 8px 0;
+  font-size: 0.84rem;
+}

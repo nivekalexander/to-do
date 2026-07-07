@@ -1,0 +1,21 @@
+<ion-toolbar class="navigation-toolbar">
+  <nav aria-label="Navegacion principal">
+    <a
+      routerLink="/tasks"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <ion-icon name="list-outline" />
+      <span>Tareas</span>
+    </a>
+
+    <a
+      routerLink="/categories"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <ion-icon name="folder-outline" />
+      <span>Categorias</span>
+    </a>
+  </nav>
+</ion-toolbar>

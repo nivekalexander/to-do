@@ -1,0 +1,47 @@
+:host {
+  --category-page-background: #f5f7fb;
+  --category-page-text: #172033;
+  --category-page-muted: #667085;
+}
+
+.page-header {
+  background: #2d74dc;
+  box-shadow: 0 5px 18px rgb(20 74 150 / 16%);
+}
+
+.page-footer {
+  background: #ffffff;
+}
+
+.page-content {
+  --background: var(--category-page-background);
+  --color: var(--category-page-text);
+  --padding-top: 0;
+  --padding-bottom: 20px;
+}
+
+.page-shell {
+  width: min(calc(100% - 24px), 760px);
+  margin: 0 auto;
+  padding: 24px 0 100px;
+}
+
+.categories-view header {
+  margin-bottom: 24px;
+}
+
+.categories-view h1,
+.categories-view p {
+  margin: 0;
+}
+
+.categories-view p {
+  margin-top: 7px;
+  color: var(--category-page-muted);
+}
+
+.loading {
+  display: grid;
+  min-height: 60vh;
+  place-items: center;
+}

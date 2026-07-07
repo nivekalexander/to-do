@@ -1,0 +1,53 @@
+:host {
+  display: block;
+  color-scheme: light;
+}
+
+.task-item {
+  --background: var(
+    --task-item-background,
+    #ffffff
+  );
+  --color: #172033;
+  --padding-start: 16px;
+  --inner-padding-end: 6px;
+
+  min-height: 84px;
+  border: 1px solid var(--task-group-border);
+  border-radius: 14px;
+}
+
+.status-icon {
+  color: var(--task-group-color);
+  font-size: 28px;
+}
+
+ion-label h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 650;
+  color: #172033;
+}
+
+.category-label {
+  display: inline-block;
+  padding: 4px 9px;
+
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--task-group-color) 13%,
+    #ffffff
+  );
+  color: var(--task-group-color);
+  font-size: 0.78rem;
+}
+
+.finished ion-label h2 {
+  color: #7a8496;
+  text-decoration: line-through;
+}
+
+ion-button {
+  --color: #667085;
+}

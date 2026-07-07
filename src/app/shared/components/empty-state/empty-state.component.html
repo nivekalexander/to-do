@@ -1,0 +1,12 @@
+<section
+  class="empty-state"
+  [class.compact]="compact()"
+>
+  <ion-icon name="file-tray-outline" />
+
+  <strong>{{ title() }}</strong>
+
+  @if (message()) {
+    <p>{{ message() }}</p>
+  }
+</section>

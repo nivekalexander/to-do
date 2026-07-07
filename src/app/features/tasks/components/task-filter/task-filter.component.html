@@ -1,0 +1,108 @@
+<ion-button
+  class="filter-button"
+  expand="block"
+  fill="outline"
+  (click)="openFilters()"
+>
+  <ion-icon
+    slot="start"
+    name="options-outline"
+  />
+
+  Filtros
+
+  @if (activeCount() > 0) {
+    <span class="filter-count">
+      {{ activeCount() }}
+    </span>
+  }
+</ion-button>
+
+<app-modal
+  [open]="open()"
+  title="Filtros"
+  description="Combina un estado y una categoria."
+  (closed)="closeFilters()"
+>
+  <section class="filter-content">
+    <div class="filter-toolbar">
+      <span>
+        {{ activeCount() }} filtro(s) activo(s)
+      </span>
+
+      <button
+        type="button"
+        class="clear-button"
+        (click)="clearFilters()"
+      >
+        Limpiar
+      </button>
+    </div>
+
+    <div class="filter-section">
+      <h3>Estado</h3>
+
+      <div class="option-grid">
+        @for (
+          option of statusOptions;
+          track option.value
+        ) {
+          <button
+            type="button"
+            class="option-button"
+            [class.selected]="selectedStatus() === option.value"
+            (click)="selectStatus(option.value)"
+          >
+            {{ option.label }}
+
+            @if (selectedStatus() === option.value) {
+              <ion-icon name="checkmark" />
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h3>Categoria</h3>
+
+      <button
+        type="button"
+        class="category-option"
+        [class.selected]="selectedCategoryId() === null"
+        (click)="selectCategory(null)"
+      >
+        Todas las categorias
+
+        @if (selectedCategoryId() === null) {
+          <ion-icon name="checkmark" />
+        }
+      </button>
+
+      @for (
+        category of categories();
+        track category.id
+      ) {
+        <button
+          type="button"
+          class="category-option"
+          [class.selected]="selectedCategoryId() === category.id"
+          (click)="selectCategory(category.id)"
+        >
+          {{ category.name }}
+
+          @if (selectedCategoryId() === category.id) {
+            <ion-icon name="checkmark" />
+          }
+        </button>
+      }
+    </div>
+
+    <ion-button
+      expand="block"
+      (click)="applyFilters()"
+    >
+      Aplicar filtros
+    </ion-button>
+  </section>
+</app-modal>

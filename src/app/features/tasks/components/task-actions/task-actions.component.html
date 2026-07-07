@@ -1,0 +1,76 @@
+<app-modal
+  [open]="open()"
+  title="Acciones de tarea"
+  [description]="task()?.title ?? ''"
+  (closed)="closed.emit()"
+>
+  @if (task(); as selectedTask) {
+    <section class="task-actions">
+      @if (selectedTask.status !== 'not-started') {
+        <button
+          type="button"
+          class="task-action not-started"
+          (click)="moved.emit('not-started')"
+        >
+          <span class="action-icon">
+            <ion-icon name="time-outline" />
+          </span>
+
+          <span class="action-copy">
+            <strong>Mover a No iniciado</strong>
+            <small>La tarea vuelve al estado inicial.</small>
+          </span>
+        </button>
+      }
+
+      @if (selectedTask.status !== 'in-progress') {
+        <button
+          type="button"
+          class="task-action in-progress"
+          (click)="moved.emit('in-progress')"
+        >
+          <span class="action-icon">
+            <ion-icon name="sync-outline" />
+          </span>
+
+          <span class="action-copy">
+            <strong>Mover a En progreso</strong>
+            <small>Marca la tarea como trabajo activo.</small>
+          </span>
+        </button>
+      }
+
+      @if (selectedTask.status !== 'finished') {
+        <button
+          type="button"
+          class="task-action finished"
+          (click)="moved.emit('finished')"
+        >
+          <span class="action-icon">
+            <ion-icon name="checkmark-circle-outline" />
+          </span>
+
+          <span class="action-copy">
+            <strong>Mover a Terminado</strong>
+            <small>Registra la tarea como completada.</small>
+          </span>
+        </button>
+      }
+
+      <button
+        type="button"
+        class="task-action delete"
+        (click)="deleted.emit()"
+      >
+        <span class="action-icon">
+          <ion-icon name="trash-outline" />
+        </span>
+
+        <span class="action-copy">
+          <strong>Eliminar tarea</strong>
+          <small>Esta accion no se puede deshacer.</small>
+        </span>
+      </button>
+    </section>
+  }
+</app-modal>
