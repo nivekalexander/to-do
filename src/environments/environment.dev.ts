@@ -25,4 +25,13 @@ export const environment: AppEnvironment = {
         'G-T05MYB09PT',
     },
   },
+
+  remoteConfig: {
+    enabled: true,
+    fetchTimeoutMillis: 10000,
+    minimumFetchIntervalMillis: 0,
+    defaultValues: {
+      task_filters_enabled: true,
+    },
+  },
 };
