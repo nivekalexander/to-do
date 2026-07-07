@@ -3,14 +3,6 @@
   background: #ffffff;
 }
 
-.navigation-toolbar {
-  --background: #ffffff;
-  --border-width: 0;
-  --min-height: 0;
-  --padding-start: 0;
-  --padding-end: 0;
-}
-
 nav {
   display: grid;
   grid-template-columns:
@@ -20,9 +12,7 @@ nav {
   width: 100%;
   padding: 16px 0;
 
-  border-top: 1px solid #e2e8f0;
   background: #ffffff;
-  box-shadow: 0 -6px 20px rgb(31 55 90 / 8%);
 }
 
 a {

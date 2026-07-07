@@ -8,7 +8,7 @@
     "start": "ionic serve --configuration=local",
     "start:local": "ionic serve --configuration=local",
     "start:dev": "ionic serve --configuration=development",
-    "build": "ionic build --configuration=production",
+    "build": "npm run build:dev",
     "build:local": "ionic build --configuration=local",
     "build:dev": "ionic build --configuration=development",
     "build:prod": "ionic build --configuration=production",
