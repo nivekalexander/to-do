@@ -20,6 +20,9 @@ import {
 import {
   provideTodoRepository,
 } from './core/data-access/todo/provide-todo-repository';
+import {
+  provideFirebaseServices,
+} from './core/firebase/provide-firebase-services';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -39,6 +42,7 @@ export const appConfig: ApplicationConfig = {
         name: '__todo_db',
       }),
     ),
+    provideFirebaseServices(),
     provideTodoRepository(),
   ],
 };

@@ -47,7 +47,14 @@ export class LocalTodoRepository
 
   private readonly storage = inject(AppStorage);
 
+  private currentState:
+    TodoState | null = null;
+
   async load(): Promise<TodoState> {
+    if (this.currentState) {
+      return structuredClone(this.currentState);
+    }
+
     let savedState =
       await this.storage.get<StoredTodoState | null>(
         STORAGE_KEY,
@@ -67,17 +74,20 @@ export class LocalTodoRepository
     }
 
     if (!this.isStoredStateValid(savedState)) {
-      return createInitialTodoState();
+      this.currentState =
+        createInitialTodoState();
+
+      return structuredClone(this.currentState);
     }
 
-    const migratedState =
+    this.currentState =
       this.migrateStoredState(savedState);
 
     if (
       loadedLegacyState
       || savedState.version !== TODO_STATE_VERSION
     ) {
-      await this.save(migratedState);
+      await this.persist(this.currentState);
     }
 
     if (loadedLegacyState) {
@@ -86,14 +96,117 @@ export class LocalTodoRepository
       );
     }
 
-    return migratedState;
+    return structuredClone(this.currentState);
   }
 
-  async save(state: TodoState): Promise<void> {
+  async createTask(task: Task): Promise<void> {
+    await this.mutate(currentState => ({
+      ...currentState,
+      tasks: [
+        task,
+        ...currentState.tasks,
+      ],
+    }));
+  }
+
+  async updateTask(task: Task): Promise<void> {
+    await this.mutate(currentState => ({
+      ...currentState,
+      tasks: currentState.tasks.map(
+        currentTask =>
+          currentTask.id === task.id
+            ? task
+            : currentTask,
+      ),
+    }));
+  }
+
+  async deleteTask(taskId: string):
+    Promise<void> {
+
+    await this.mutate(currentState => ({
+      ...currentState,
+      tasks: currentState.tasks.filter(
+        task => task.id !== taskId,
+      ),
+    }));
+  }
+
+  async createCategory(
+    category: Category,
+  ): Promise<void> {
+    await this.mutate(currentState => ({
+      ...currentState,
+      categories: [
+        ...currentState.categories,
+        category,
+      ],
+    }));
+  }
+
+  async updateCategory(
+    category: Category,
+  ): Promise<void> {
+    await this.mutate(currentState => ({
+      ...currentState,
+      categories:
+        currentState.categories.map(
+          currentCategory =>
+            currentCategory.id === category.id
+              ? category
+              : currentCategory,
+        ),
+    }));
+  }
+
+  async deleteCategory(
+    categoryId: string,
+    tasksToUpdate: readonly Task[],
+  ): Promise<void> {
+    const updatedTasksById =
+      new Map(
+        tasksToUpdate.map(task => [
+          task.id,
+          task,
+        ]),
+      );
+
+    await this.mutate(currentState => ({
+      ...currentState,
+      categories:
+        currentState.categories.filter(
+          category =>
+            category.id !== categoryId,
+        ),
+      tasks: currentState.tasks.map(
+        task =>
+          updatedTasksById.get(task.id)
+          ?? task,
+      ),
+    }));
+  }
+
+  private async mutate(
+    update: (
+      currentState: TodoState,
+    ) => TodoState,
+  ): Promise<void> {
+    const currentState = await this.load();
+    const nextState = update(currentState);
+
+    await this.persist(nextState);
+  }
+
+  private async persist(
+    state: TodoState,
+  ): Promise<void> {
     await this.storage.set(
       STORAGE_KEY,
       state,
     );
+
+    this.currentState =
+      structuredClone(state);
   }
 
   private migrateStoredState(

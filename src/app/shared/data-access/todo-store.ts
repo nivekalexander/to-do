@@ -42,10 +42,15 @@ export class TodoStore {
   });
 
   readonly loading = this.loadingState.asReadonly();
-  readonly initialized = this.initializedState.asReadonly();
-  readonly filters = this.filtersState.asReadonly();
+  readonly initialized =
+    this.initializedState.asReadonly();
 
-  readonly tasks = computed(() => this.state().tasks);
+  readonly filters =
+    this.filtersState.asReadonly();
+
+  readonly tasks = computed(
+    () => this.state().tasks,
+  );
 
   readonly categories = computed(
     () => this.state().categories,
@@ -152,7 +157,9 @@ export class TodoStore {
       updatedAt: now,
     };
 
-    await this.updateState(currentState => ({
+    await this.repository.createTask(task);
+
+    this.state.update(currentState => ({
       ...currentState,
       tasks: [
         task,
@@ -181,21 +188,22 @@ export class TodoStore {
       return;
     }
 
-    await this.updateState(currentState => ({
-      ...currentState,
-      tasks: currentState.tasks.map(currentTask =>
-        currentTask.id === taskId
-          ? {
-              ...currentTask,
-              status,
-              updatedAt: Date.now(),
-            }
-          : currentTask,
-      ),
-    }));
+    const updatedTask: Task = {
+      ...task,
+      status,
+      updatedAt: Date.now(),
+    };
+
+    await this.repository.updateTask(
+      updatedTask,
+    );
+
+    this.replaceTask(updatedTask);
   }
 
-  async deleteTask(taskId: string): Promise<void> {
+  async deleteTask(taskId: string):
+    Promise<void> {
+
     const taskExists = this.state().tasks.some(
       task => task.id === taskId,
     );
@@ -204,7 +212,9 @@ export class TodoStore {
       return;
     }
 
-    await this.updateState(currentState => ({
+    await this.repository.deleteTask(taskId);
+
+    this.state.update(currentState => ({
       ...currentState,
       tasks: currentState.tasks.filter(
         task => task.id !== taskId,
@@ -212,7 +222,9 @@ export class TodoStore {
     }));
   }
 
-  async addCategory(name: string): Promise<void> {
+  async addCategory(name: string):
+    Promise<void> {
+
     const cleanName = name.trim();
 
     if (!cleanName) {
@@ -232,7 +244,11 @@ export class TodoStore {
       updatedAt: now,
     };
 
-    await this.updateState(currentState => ({
+    await this.repository.createCategory(
+      category,
+    );
+
+    this.state.update(currentState => ({
       ...currentState,
       categories: [
         ...currentState.categories,
@@ -253,12 +269,13 @@ export class TodoStore {
       );
     }
 
-    const categoryExists =
-      this.state().categories.some(
-        category => category.id === categoryId,
+    const category =
+      this.state().categories.find(
+        currentCategory =>
+          currentCategory.id === categoryId,
       );
 
-    if (!categoryExists) {
+    if (!category) {
       throw new Error(
         'La categoria seleccionada no existe.',
       );
@@ -269,18 +286,25 @@ export class TodoStore {
       categoryId,
     );
 
-    await this.updateState(currentState => ({
+    const updatedCategory: Category = {
+      ...category,
+      name: cleanName,
+      updatedAt: Date.now(),
+    };
+
+    await this.repository.updateCategory(
+      updatedCategory,
+    );
+
+    this.state.update(currentState => ({
       ...currentState,
-      categories: currentState.categories.map(
-        category =>
-          category.id === categoryId
-            ? {
-                ...category,
-                name: cleanName,
-                updatedAt: Date.now(),
-              }
-            : category,
-      ),
+      categories:
+        currentState.categories.map(
+          currentCategory =>
+            currentCategory.id === categoryId
+              ? updatedCategory
+              : currentCategory,
+        ),
     }));
   }
 
@@ -298,20 +322,42 @@ export class TodoStore {
 
     const now = Date.now();
 
-    await this.updateState(currentState => ({
+    const tasksToUpdate =
+      this.state().tasks
+        .filter(
+          task =>
+            task.categoryId === categoryId,
+        )
+        .map(task => ({
+          ...task,
+          categoryId: null,
+          updatedAt: now,
+        }));
+
+    await this.repository.deleteCategory(
+      categoryId,
+      tasksToUpdate,
+    );
+
+    const updatedTasksById =
+      new Map(
+        tasksToUpdate.map(task => [
+          task.id,
+          task,
+        ]),
+      );
+
+    this.state.update(currentState => ({
       ...currentState,
       categories:
         currentState.categories.filter(
-          category => category.id !== categoryId,
+          category =>
+            category.id !== categoryId,
         ),
-      tasks: currentState.tasks.map(task =>
-        task.categoryId === categoryId
-          ? {
-              ...task,
-              categoryId: null,
-              updatedAt: now,
-            }
-          : task,
+      tasks: currentState.tasks.map(
+        task =>
+          updatedTasksById.get(task.id)
+          ?? task,
       ),
     }));
 
@@ -341,15 +387,18 @@ export class TodoStore {
     });
   }
 
-  private async updateState(
-    update: (
-      currentState: TodoState,
-    ) => TodoState,
-  ): Promise<void> {
-    const nextState = update(this.state());
-
-    await this.repository.save(nextState);
-    this.state.set(nextState);
+  private replaceTask(
+    updatedTask: Task,
+  ): void {
+    this.state.update(currentState => ({
+      ...currentState,
+      tasks: currentState.tasks.map(
+        task =>
+          task.id === updatedTask.id
+            ? updatedTask
+            : task,
+      ),
+    }));
   }
 
   private validateCategory(
@@ -361,7 +410,8 @@ export class TodoStore {
 
     const categoryExists =
       this.state().categories.some(
-        category => category.id === categoryId,
+        category =>
+          category.id === categoryId,
       );
 
     if (!categoryExists) {
@@ -384,7 +434,8 @@ export class TodoStore {
           category.id !== ignoredCategoryId
           && category.name
             .trim()
-            .toLocaleLowerCase() === normalizedName,
+            .toLocaleLowerCase()
+              === normalizedName,
       );
 
     if (duplicated) {

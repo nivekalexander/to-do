@@ -3,24 +3,26 @@ import {
 } from './environment.model';
 
 export const environment: AppEnvironment = {
-  production: true,
+  production: false,
   todoDataSource: 'firebase',
 
   firebase: {
     enabled: true,
     config: {
       apiKey:
-        'AIzaSyDGywIk-erBwg8-Ak4s5dzWhmL0YUSysGk',
+        'AIzaSyAN3fh_UAuUrQreI5P3t2Vu1uCM6mkn2w0',
       authDomain:
-        'to-do-prod-426ec.firebaseapp.com',
+        'to-do-90ec2.firebaseapp.com',
       projectId:
-        'to-do-prod-426ec',
+        'to-do-90ec2',
       storageBucket:
-        'to-do-prod-426ec.firebasestorage.app',
+        'to-do-90ec2.firebasestorage.app',
       messagingSenderId:
-        '560006178503',
+        '254806934023',
       appId:
-        '1:560006178503:web:6662402244fd63af1f40e2',
+        '1:254806934023:web:7e7403b483fce74bffe0a2',
+      measurementId:
+        'G-T05MYB09PT',
     },
   },
 };

@@ -1,15 +1,23 @@
-import { TestBed } from '@angular/core/testing';
+import {
+  TestBed,
+} from '@angular/core/testing';
 
+import {
+  Category,
+} from '../models/category.model';
+import {
+  Task,
+} from '../models/task.model';
+import {
+  createInitialTodoState,
+  TodoState,
+} from '../models/todo-state.model';
 import {
   TodoRepository,
 } from './contracts/todo.repository';
 import {
   TODO_REPOSITORY,
 } from './todo-repository.token';
-import {
-  createInitialTodoState,
-  TodoState,
-} from '../models/todo-state.model';
 import { TodoStore } from './todo-store';
 
 class TestTodoRepository
@@ -21,8 +29,91 @@ class TestTodoRepository
     return structuredClone(this.state);
   }
 
-  async save(state: TodoState): Promise<void> {
-    this.state = structuredClone(state);
+  async createTask(task: Task): Promise<void> {
+    this.state = {
+      ...this.state,
+      tasks: [
+        task,
+        ...this.state.tasks,
+      ],
+    };
+  }
+
+  async updateTask(task: Task): Promise<void> {
+    this.state = {
+      ...this.state,
+      tasks: this.state.tasks.map(
+        currentTask =>
+          currentTask.id === task.id
+            ? task
+            : currentTask,
+      ),
+    };
+  }
+
+  async deleteTask(taskId: string):
+    Promise<void> {
+
+    this.state = {
+      ...this.state,
+      tasks: this.state.tasks.filter(
+        task => task.id !== taskId,
+      ),
+    };
+  }
+
+  async createCategory(
+    category: Category,
+  ): Promise<void> {
+    this.state = {
+      ...this.state,
+      categories: [
+        ...this.state.categories,
+        category,
+      ],
+    };
+  }
+
+  async updateCategory(
+    category: Category,
+  ): Promise<void> {
+    this.state = {
+      ...this.state,
+      categories:
+        this.state.categories.map(
+          currentCategory =>
+            currentCategory.id === category.id
+              ? category
+              : currentCategory,
+        ),
+    };
+  }
+
+  async deleteCategory(
+    categoryId: string,
+    tasksToUpdate: readonly Task[],
+  ): Promise<void> {
+    const updatedTasksById =
+      new Map(
+        tasksToUpdate.map(task => [
+          task.id,
+          task,
+        ]),
+      );
+
+    this.state = {
+      ...this.state,
+      categories:
+        this.state.categories.filter(
+          category =>
+            category.id !== categoryId,
+        ),
+      tasks: this.state.tasks.map(
+        task =>
+          updatedTasksById.get(task.id)
+          ?? task,
+      ),
+    };
   }
 }
 
@@ -55,6 +146,7 @@ describe('TodoStore', () => {
     await store.addTask('Preparar entrevista');
 
     expect(store.tasks().length).toBe(1);
+
     expect(store.tasks()[0].status)
       .toBe('not-started');
   });
@@ -66,7 +158,10 @@ describe('TodoStore', () => {
 
     const taskId = store.tasks()[0].id;
 
-    await store.moveTask(taskId, 'finished');
+    await store.moveTask(
+      taskId,
+      'finished',
+    );
 
     store.setFilters({
       categoryId: null,

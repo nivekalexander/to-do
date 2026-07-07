@@ -3,11 +3,19 @@ export type TodoDataSource =
   | 'mock'
   | 'firebase';
 
+export interface FirebaseClientConfig {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  storageBucket: string;
+  messagingSenderId: string;
+  appId: string;
+  measurementId?: string;
+}
+
 export interface FirebaseEnvironment {
   enabled: boolean;
-  projectId: string;
-  collectionName: string;
-  documentId: string;
+  config: FirebaseClientConfig;
 }
 
 export interface AppEnvironment {
